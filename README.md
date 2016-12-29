@@ -18,6 +18,8 @@ Any paramter present is decoded by the server, and then the webpage with the WiP
 ```
 This will make the page refresh itself every thirty seconds.
 
+![](https://github.com/erikdelange/WiPy-2.0-Web-Interface/blob/master/ui.png)
+
 ###Sources
 This example combines elements from the following code snippets which can found in the MicroPython documentation.
 
