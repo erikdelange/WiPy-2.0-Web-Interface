@@ -2,7 +2,7 @@
 Web Interface to control the LED and user button on WiPy Expansion Board 2.0
 
 ###Summary
-The WiPy expansion board contains a user controllable led and a push-button. Using the WiPy's wireless capabilities it is easy to create a webinterface to switch the led on and off, and read the status of the button. This example shows how to setup such an interface.
+The WiPy expansion board contains a user controllable led and a push-button. Using the WiPy's wireless capabilities it is easy to create a web interface to switch the led on and off, and read the status of the button. This example shows how to setup such an interface.
 
 ###HTML
 The HTML code is based on the Bootstrap framework. With just a few extra command Bootstrap allows you to create a slick interface which scales nicely with the device you are using. The key elements to look for in the HTML code are the two buttons to control the led, and the table to hold the status of the WiPy's buttons.
@@ -17,6 +17,8 @@ Any paramter present is decoded by the server, and then the webpage with the WiP
 <meta http-equiv="refresh" content="30">
 ```
 This will make the page refresh itself every thirty seconds.
+
+The resulting web page looks like this.
 
 ![](https://github.com/erikdelange/WiPy-2.0-Web-Interface/blob/master/ui.png)
 
