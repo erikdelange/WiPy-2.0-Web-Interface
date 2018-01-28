@@ -12,7 +12,7 @@ The actual server loops waiting for an HTML request. Only the first line of the 
 ```
 GET /?LED=Off HTTP/1.1
 ```
-Any paramter present is decoded by the server, and then the webpage with the WiPy's button status is returned. So switching a led on or off implicetly refreshed the webpage. When this must be done on a regular basis - for example when you want to monitor constantly changing inputs - then uncomment the following line in the HTML.
+Any parameter present is decoded by the server, and then the webpage with the WiPy's button status is returned. So switching a led on or off implicetly refreshed the webpage. When this must be done on a regular basis - for example when you want to monitor constantly changing inputs - then uncomment the following line in the HTML.
 ```html
 <meta http-equiv="refresh" content="30">
 ```
