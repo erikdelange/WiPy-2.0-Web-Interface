@@ -6,6 +6,7 @@ html = """<!DOCTYPE html>
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <!-- meta http-equiv="refresh" content="30" -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="icon" href="data:;base64,=">
         <title> WiPy 2.0 </title>
     </head>
     <div class="container">
@@ -48,7 +49,7 @@ serversocket.listen(1)
 
 while True:
     conn, addr = serversocket.accept()
-    print("Connection from", addr[0])
+    print("new connection from {0}".format(addr))
 
     request = conn.readline()
     while True:
@@ -56,7 +57,9 @@ while True:
         if line == b"" or line == b"\r\n":
             break
 
-    print("Request = ", request)
+    conn.sendall("HTTP/1.1 200 OK\nConnection: close\nServer: WiPy\nContent-Type: text/html\n\n")
+
+    print("request:", request)
 
     if request.find(b"/?LED=On") != -1:
         led(0)
@@ -68,4 +71,7 @@ while True:
     response = html % "\n".join(rows)
 
     conn.send(response)
+    conn.sendall("\n")
     conn.close()
+
+    print("closed connection with {0}".format(addr))
