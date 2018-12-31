@@ -4,7 +4,7 @@ html = """<!DOCTYPE html>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <!-- meta http-equiv="refresh" content="30" -->
+        <meta http-equiv="refresh" content="5">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="icon" href="data:;base64,=">
         <title> WiPy 2.0 </title>
@@ -35,6 +35,7 @@ html = """<!DOCTYPE html>
 
 from machine import Pin
 import socket
+import gc
 
 # Connect to the user led on the expansion board
 led = Pin(Pin.exp_board.G16, mode=Pin.OUT)
@@ -49,9 +50,16 @@ serversocket.listen(1)
 
 while True:
     conn, addr = serversocket.accept()
-    print("new connection from {0}".format(addr))
 
     request = conn.readline()
+
+    print("request:", request, "from", addr[0])
+
+    if request == b"" or request == b"\r\n":
+        print("malformed request")
+        conn.close()
+        continue
+
     while True:
         line = conn.readline()
         if line == b"" or line == b"\r\n":
@@ -59,11 +67,9 @@ while True:
 
     conn.sendall("HTTP/1.1 200 OK\nConnection: close\nServer: WiPy\nContent-Type: text/html\n\n")
 
-    print("request:", request)
-
-    if request.find(b"/?LED=On") != -1:
+    if request.find(b"LED=On") != -1:
         led(0)
-    elif request.find(b"/?LED=Off") != -1:
+    elif request.find(b"LED=Off") != -1:
         led(1)
 
     rows = ["<tr> <td> %s </td> <td> %d </td> </tr>" % (p.id(), p.value()) for p in pins]
@@ -74,4 +80,5 @@ while True:
     conn.sendall("\n")
     conn.close()
 
-    print("closed connection with {0}".format(addr))
+    gc.collect()
+    print(gc.mem_free())
