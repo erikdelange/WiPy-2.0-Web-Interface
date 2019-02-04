@@ -7,7 +7,7 @@ html = """<!DOCTYPE html>
         <meta http-equiv="refresh" content="5">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="icon" href="data:;base64,=">
-        <title> WiPy 2.0 </title>
+        <title> WiPy </title>
     </head>
     <div class="container">
     <body>
@@ -26,34 +26,35 @@ html = """<!DOCTYPE html>
             <button name="LED" value="On" type="submit"> LED ON </button>
             <button name="LED" value="Off" type="submit"> LED OFF </button>
         </form>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>
     </div>
 </html>
 """
 
 from machine import Pin
+
 import socket
 import gc
 
-# Connect to the user led on the expansion board
+# Connect variable 'led' to the user led on the expansion board
 led = Pin(Pin.exp_board.G16, mode=Pin.OUT)
 led(1)
 
-# Connect to the user button on the expansion board plus one additional pin
+# Connect 'pins' to the user button on the expansion board plus one additional pin
 pins = [Pin(i, mode=Pin.IN, pull=Pin.PULL_UP) for i in (Pin.exp_board.G17, Pin.exp_board.G22)]
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(socket.getaddrinfo('0.0.0.0', 80)[0][-1])
-serversocket.listen(1)
+serversocket.listen()
 
 while True:
-    conn, addr = serversocket.accept()
+    gc.collect()
+    print(gc.mem_free())
 
+    conn, addr = serversocket.accept()
     request = conn.readline()
 
-    print("request:", request, "from", addr[0])
+    print("request:", request, "from", addr)
 
     if request == b"" or request == b"\r\n":
         print("malformed request")
@@ -75,10 +76,7 @@ while True:
     rows = ["<tr> <td> %s </td> <td> %d </td> </tr>" % (p.id(), p.value()) for p in pins]
 
     response = html % "\n".join(rows)
-
     conn.send(response)
+
     conn.sendall("\n")
     conn.close()
-
-    gc.collect()
-    print(gc.mem_free())
