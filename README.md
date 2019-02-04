@@ -12,11 +12,13 @@ The server waits for an HTML request. Only the first line of the request is kept
 ```
 GET /?LED=Off HTTP/1.1
 ```
-Any parameter present is decoded by the server, and then a fresh webpage with the WiPy's current button status is returned. So, switching a led on or off implicitly refreshes the webpage. When this must be done on a regular basis - for example when you want to monitor constantly changing inputs - then uncomment the following line in the HTML. Note that this is not particularly efficient. Another approach can be found [here](https://github.com/erikdelange/WiPy-2.0-Web-Interface-using-JavaScript).
+Any parameter present is decoded by the server, and then a fresh webpage with the WiPy's current button status is returned. So, switching a led on or off implicitly refreshes the webpage. When this must be done on a regular basis - for example when you want to monitor constantly changing inputs - then uncomment the following line in the HTML. 
 ```html
 <meta http-equiv="refresh" content="30">
 ```
 This will make the page refresh itself every thirty seconds.
+
+Note that this is not particularly efficient. Another approach can be found [here](https://github.com/erikdelange/WiPy-2.0-Web-Interface-using-JavaScript).
 
 The resulting web page looks like this.
 
