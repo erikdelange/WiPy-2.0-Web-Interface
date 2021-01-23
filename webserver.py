@@ -2,13 +2,17 @@ html = """<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta http-equiv="refresh" content="5">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- meta http-equiv="refresh" content="15" -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="icon" href="data:;base64,=">
         <title> WiPy </title>
     </head>
+    <style>
+        .container {
+            max-width: 360px;
+            }
+    </style>
     <div class="container">
     <body>
         <div class="well"> <h1> Expansion Board </h1> </div>
@@ -30,11 +34,10 @@ html = """<!DOCTYPE html>
     </div>
 </html>
 """
-
-from machine import Pin
-
 import socket
 import gc
+
+from machine import Pin
 
 # Connect variable 'led' to the user led on the expansion board
 led = Pin(Pin.exp_board.G16, mode=Pin.OUT)
@@ -43,34 +46,36 @@ led(1)
 # Connect 'pins' to the user button on the expansion board plus one additional pin
 pins = [Pin(i, mode=Pin.IN, pull=Pin.PULL_UP) for i in (Pin.exp_board.G17, Pin.exp_board.G22)]
 
+
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(socket.getaddrinfo('0.0.0.0', 80)[0][-1])
 serversocket.listen()
 
 while True:
     gc.collect()
-    print(gc.mem_free())
 
     conn, addr = serversocket.accept()
-    request = conn.readline()
+    request_line = conn.readline()
 
-    print("request:", request, "from", addr)
+    print("request:", request_line, "from", addr)
 
-    if request == b"" or request == b"\r\n":
+    if request_line in [b"", b"\r\n"]:
         print("malformed request")
         conn.close()
         continue
 
     while True:
         line = conn.readline()
-        if line == b"" or line == b"\r\n":
+        if line in [b"", b"\r\n"]:
             break
 
-    conn.sendall("HTTP/1.1 200 OK\nConnection: close\nServer: WiPy\nContent-Type: text/html\n\n")
+    conn.write(b"HTTP/1.1 200 OK\r\n")
+    conn.write(b"Connection: close\r\n")
+    conn.write(b"Content-Type: text/html\r\n\r\n")
 
-    if request.find(b"LED=On") != -1:
+    if request_line.find(b"LED=On") != -1:
         led(0)
-    elif request.find(b"LED=Off") != -1:
+    elif request_line.find(b"LED=Off") != -1:
         led(1)
 
     rows = ["<tr> <td> %s </td> <td> %d </td> </tr>" % (p.id(), p.value()) for p in pins]
@@ -78,5 +83,4 @@ while True:
     response = html % "\n".join(rows)
     conn.send(response)
 
-    conn.sendall("\n")
     conn.close()
