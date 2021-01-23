@@ -3,7 +3,7 @@ html = """<!DOCTYPE html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="refresh" content="15">
+        <!-- meta http-equiv="refresh" content="15" -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="icon" href="data:;base64,=">
         <title> WiPy </title>
@@ -15,6 +15,7 @@ html = """<!DOCTYPE html>
     </style>
     <div class="container">
     <body>
+        <br>
         <div class="well"> <h1> Expansion Board </h1> </div>
         <div class="well-sm"> <h2> Button Status </h2> </div>
         <table class="table table-bordered table-sm">
@@ -53,6 +54,7 @@ serversocket.listen()
 
 while True:
     gc.collect()
+    print(gc.mem_free(), "bytes free")
 
     conn, addr = serversocket.accept()
     request_line = conn.readline()
@@ -78,9 +80,10 @@ while True:
     elif request_line.find(b"LED=Off") != -1:
         led(1)
 
-    rows = ["<tr> <td> %s </td> <td> %d </td> </tr>" % (p.id(), p.value()) for p in pins]
+    rows = ["<tr> <td> {} </td> <td> {} </td> </tr>".format(p.id(), p.value()) for p in pins]
 
     response = html % "\n".join(rows)
+
     conn.send(response)
 
     conn.close()
