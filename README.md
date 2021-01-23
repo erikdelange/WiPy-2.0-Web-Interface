@@ -22,7 +22,7 @@ Note that this is not particularly efficient. Another approach can be found [her
 
 The resulting web page looks like this.
 
-![](https://github.com/erikdelange/WiPy-2.0-Web-Interface/blob/master/ui.png)
+![ui.png](https://github.com/erikdelange/WiPy-2.0-Web-Interface/blob/master/ui.png)
 
 ### Sources
 This example combines elements from the following code snippets which can found in the MicroPython documentation.
