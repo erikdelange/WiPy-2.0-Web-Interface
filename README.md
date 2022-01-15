@@ -8,7 +8,7 @@ The WiPy expansion board contains a user controllable led and a push-button. By 
 The HTML code is based on the Bootstrap 3 framework. With just a few extra commands Bootstrap provides you with a pretty interface which scales nicely with the device you are using. The key elements to look for in the HTML code are the two buttons to switch the led on and off, and the table to hold the status of the WiPy's button (plus for demonstration purposes one additional pin).
 
 ### Code
-The server waits for an HTML request. Only the first line of the request is kept and the rest - the header fields - is discarded. If any parameters were passed they will be in the request line, preceded by a question mark. For example, this is the request after pressing the LED Off button.
+The server waits for an HTTP request. Only the first line of the request is kept and the rest - the header fields - is discarded. If any parameters were passed they will be in the request line, preceded by a question mark. For example, this is the request after pressing the LED Off button.
 ```
 GET /?LED=Off HTTP/1.1
 ```
@@ -25,7 +25,7 @@ The resulting web page looks like this.
 ![ui.png](https://github.com/erikdelange/WiPy-2.0-Web-Interface/blob/master/ui.png)
 
 ### Sources
-This example combines elements from the following code snippets which can found in the MicroPython documentation.
+This example combines elements from the following code snippets which can be found in the MicroPython documentation.
 
 * <https://github.com/micropython/micropython/blob/master/examples/network/http_server.py>
 * <https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/network_tcp.html>
